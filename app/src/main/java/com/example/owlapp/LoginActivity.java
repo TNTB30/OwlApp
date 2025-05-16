@@ -12,11 +12,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText edtUsername, edtPassword;
     private Button btnLogin, btnRegister;
+    private UserManager userManager;
+    private OTPManager otpManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        userManager = new UserManager(this);
+        otpManager = new OTPManager(this);
 
         // Khởi tạo view
         edtUsername = findViewById(R.id.edtUsername);
@@ -33,14 +38,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Giả lập đăng nhập thành công
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công. Chuyển sang OTP", Toast.LENGTH_SHORT).show();
+                } else if (userManager.authenticate(username, password)) {
+                    // Lấy thông tin người dùng
+                    User user = userManager.getUser();
 
-                    // Chuyển đến màn hình OTP
-                    Intent intent = new Intent(LoginActivity.this, OtpActivity.class);
-                    intent.putExtra("username", username); // Nếu bạn muốn dùng sau
-                    startActivity(intent);
+                    otpManager.sendOTP(user.getEmail(), new OTPManager.OTPCallback() {
+                        @Override
+                        public void onOTPSent(String otp) {
+                            // Lưu OTP vào UserManager
+                            userManager.saveTemporaryOTP(otp);
+
+                            Toast.makeText(LoginActivity.this, "Vui lòng nhập mã OTP", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, OtpActivity.class);
+                            intent.putExtra("purpose", "login");
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
                 }
             }
         });

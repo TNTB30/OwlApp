@@ -7,7 +7,7 @@
     <string name="password">Mật khẩu</string>
     <string name="confirm_password">Nhập lại mật khẩu</string>
     <string name="no_account">Bạn chưa có tài khoản?</string>
-    <string name="email_sdt">Email, SDT</string>
+    <string name="email_sdt">Email</string>
     <string name="full_name">Họ và tên</string>
     <string name="otp_code">Nhập mã OTP</string>
     <string name="confirm">Xác Nhận</string>

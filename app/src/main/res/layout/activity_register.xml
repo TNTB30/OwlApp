@@ -51,6 +51,26 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
+        <!-- Thêm trường số điện thoại sau phần nhập lại mật khẩu -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Số điện thoại"
+            android:textColor="@color/teal"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edtPhone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Nhập số điện thoại"
+            android:inputType="phone"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp" />
+
         <!-- Họ tên -->
         <TextView
             android:layout_width="wrap_content"

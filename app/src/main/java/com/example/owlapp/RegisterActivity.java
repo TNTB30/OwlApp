@@ -10,13 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText edtEmail, edtFullName, edtUsername, edtPassword, edtConfirmPassword;
+    private EditText edtEmail, edtFullName, edtUsername, edtPassword, edtConfirmPassword, edtPhone;
     private Button btnRegister;
+    private UserManager userManager;
+    private OTPManager otpManager;
+    private String currentOTP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        userManager = new UserManager(this);
+        otpManager = new OTPManager(this);
 
         // Initialize views
         edtEmail = findViewById(R.id.edtEmail);
@@ -24,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
+        edtPhone = findViewById(R.id.edtPhone); // Thêm trường số điện thoại
         btnRegister = findViewById(R.id.btnRegister);
 
         // Set click listener
@@ -35,23 +42,31 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = edtUsername.getText().toString().trim();
                 String password = edtPassword.getText().toString().trim();
                 String confirmPassword = edtConfirmPassword.getText().toString().trim();
+                String phone = edtPhone.getText().toString().trim();
 
                 if (email.isEmpty() || fullName.isEmpty() || username.isEmpty() ||
-                        password.isEmpty() || confirmPassword.isEmpty()) {
+                        password.isEmpty() || confirmPassword.isEmpty() || phone.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else if (!password.equals(confirmPassword)) {
                     Toast.makeText(RegisterActivity.this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Simulate registration process
-                    // In a real app, you would send this data to a server
-                    Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                    // Gửi OTP đến email hoặc số điện thoại
+                    otpManager.sendOTP(email, new OTPManager.OTPCallback() {
+                        @Override
+                        public void onOTPSent(String otp) {
+                            // Lưu OTP vào UserManager thay vì biến tạm
+                            userManager.saveTemporaryOTP(otp);
 
-                    // Navigate to OTP verification
-                    Intent intent = new Intent(RegisterActivity.this, OtpActivity.class);
-                    // Truyền thông tin đăng ký để có thể sử dụng sau khi xác thực OTP
-                    intent.putExtra("email", email);
-                    intent.putExtra("username", username);
-                    startActivity(intent);
+                            // Lưu thông tin người dùng tạm thời
+                            User newUser = new User(email, fullName, username, password, phone);
+                            userManager.saveUser(newUser);
+
+                            // Chuyển sang màn hình xác nhận OTP
+                            Intent intent = new Intent(RegisterActivity.this, OtpActivity.class);
+                            intent.putExtra("purpose", "register");
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
         });

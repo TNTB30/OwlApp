@@ -94,7 +94,7 @@ public class HomeActivity extends AppCompatActivity {
         navLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Chuyển đến màn hình thư viện (chưa triển khai)
+                // Chuyển đến màn hình thư viện
                 Intent intent = new Intent(HomeActivity.this, LibraryActivity.class);
                 startActivity(intent);
             }

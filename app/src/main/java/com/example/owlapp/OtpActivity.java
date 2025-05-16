@@ -14,18 +14,20 @@ public class OtpActivity extends AppCompatActivity {
     private EditText edtOtp;
     private Button btnConfirm;
     private ImageView imgBack;
-    private String email, username;
+    private UserManager userManager;
+    private OTPManager otpManager;
+    private String purpose; // "register" hoặc "login"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
-        // Nhận thông tin từ màn hình đăng ký
-        if (getIntent().hasExtra("email")) {
-            email = getIntent().getStringExtra("email");
-            username = getIntent().getStringExtra("username");
-        }
+        userManager = new UserManager(this);
+        otpManager = new OTPManager(this);
+
+        // Nhận thông tin từ Intent
+        purpose = getIntent().getStringExtra("purpose");
 
         // Initialize views
         edtOtp = findViewById(R.id.edtOtp);
@@ -40,15 +42,22 @@ public class OtpActivity extends AppCompatActivity {
 
                 if (otp.isEmpty() || otp.length() < 6) {
                     Toast.makeText(OtpActivity.this, "Vui lòng nhập đủ 6 số OTP", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Simulate OTP verification
-                    // In a real app, you would validate this against a server
+                } else if (otpManager.verifyOTP(otp)) {
                     Toast.makeText(OtpActivity.this, "Xác thực thành công", Toast.LENGTH_SHORT).show();
 
-                    // Navigate to HomeActivity
-                    Intent intent = new Intent(OtpActivity.this, HomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    if ("register".equals(purpose)) {
+                        // Nếu là đăng ký, chuyển đến HomeActivity
+                        Intent intent = new Intent(OtpActivity.this, HomeActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    } else {
+                        // Nếu là đăng nhập, chuyển đến HomeActivity
+                        Intent intent = new Intent(OtpActivity.this, HomeActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(OtpActivity.this, "Mã OTP không đúng", Toast.LENGTH_SHORT).show();
                 }
             }
         });

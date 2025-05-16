@@ -222,11 +222,13 @@ public class BookDetailActivity extends AppCompatActivity implements CommentAdap
             }
         });
 
+        // Sửa sự kiện nút yêu thích
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Thêm vào danh sách yêu thích (chưa triển khai)
-                Toast.makeText(BookDetailActivity.this, "Đã thêm vào danh sách yêu thích", Toast.LENGTH_SHORT).show();
+                // Thêm vào danh sách đọc
+                LibraryActivity libraryActivity = new LibraryActivity();
+                libraryActivity.addToReadingList(book);
             }
         });
 

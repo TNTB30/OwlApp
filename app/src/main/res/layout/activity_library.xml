@@ -83,15 +83,6 @@
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/btnArchive"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/tab_background_selector"
-            android:text="Lưu trữ"
-            android:textColor="@color/white" />
-
-        <Button
             android:id="@+id/btnReadingLists"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -100,6 +91,7 @@
             android:text="Danh sách đọc"
             android:textColor="@color/white" />
     </LinearLayout>
+
 
     <!-- Content Container -->
     <FrameLayout
